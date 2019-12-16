@@ -9,7 +9,7 @@
 
 #if __WORDSIZE == 64
 typedef int64_t ws;
-#elif __WORDSIZE 32
+#elif __WORDSIZE == 32
 typedef int32_t ws;
 #endif
 
@@ -141,8 +141,8 @@ int main(int argc, char const *argv[])
 
         plen = strlen(pattern);
 
-        naive_matcher_imp(text, tlen, pattern, plen);
-        // naive_matcher(text, tlen, pattern, plen);
+        // naive_matcher_imp(text, tlen, pattern, plen);
+        naive_matcher(text, tlen, pattern, plen);
     }
 
     free(pattern);
