@@ -78,7 +78,7 @@ ERR_MALLOC_F:
 
 int *badsymbolshift(char *p, int m)
 {
-    int *table = (int *)malloc(256 * sizeof(char));
+    int *table = (int *)malloc(256 * sizeof(int));
 
     for (int i = 0; i < 256; i++)
     {
@@ -101,7 +101,7 @@ void boyer_matcher(char *text, int n, char *pattern, int m)
     int *badsym = badsymbolshift(pattern, m);
 
     int *goodsuff = (int *) malloc((m+2)*sizeof(int));
-    // suffixtable(pattern, m, goodsuff);
+    suffixtable(pattern, m, goodsuff);
 
     int i = m - 1;
     int k;
@@ -116,26 +116,26 @@ void boyer_matcher(char *text, int n, char *pattern, int m)
         }
         if(k == m)
         {
-            // printf("%d ", i-m+1);
+            printf("%d ", i-m+1);
             found = 1;
             i++;
             continue;
         }
         
         // shift for mismatching character
-        // d1 = badsym[text[i-k]] - k;
-        // if(d1 <= 0)
-        //     d1 = 1;
+        d1 = badsym[text[i-k]] - k;
+        if(d1 <= 0)
+            d1 = 1;
         
-        // d2 = goodsuff[m-k];
+        d2 = goodsuff[m-k];
 
-        i = i+badsym[text[i]];
 
-        // if(k != 0)
-        //     i = i + (d1 > d2 ? d1 : d2);
-        // else
-        //     i = i + d1;
+        if(k != 0)
+            i = i + (d1 > d2 ? d1 : d2);
+        else
+            i = i + d1;
         
+        // i = i+badsym[text[i]];
     }
 
     free(badsym);
@@ -146,7 +146,7 @@ void boyer_matcher(char *text, int n, char *pattern, int m)
         printf("-1\n");
         return;
     }
-    printf("1\n");
+    printf("\n");
     
     
 }
@@ -237,8 +237,8 @@ int get_matched_amt(char *pattern, char *text, int m, int n, int i)
             ws p = 0;
             ws t = 0;
 
-            memcpy((char *) &p + 7, pattern, charleft);
-            memcpy((char *) &t + 7, text + (i - (m-1)), charleft);
+            memcpy(((char *) &p) + (wsbytes - charleft), pattern, charleft);
+            memcpy(((char *) &t) + (wsbytes - charleft), text + (i - (m-1)), charleft);
 
             int k = getmatchedchars(p^t);
 
@@ -265,8 +265,14 @@ void boyer_matcher_imp(char *text, int n, char *pattern, int m)
 
     int *badsym = badsymbolshift(pattern, m);
 
+    int *goodsuff = (int *) malloc((m+2)*sizeof(int));
+    suffixtable(pattern, m, goodsuff);
+
+
     int i = m - 1;
     int k;
+
+    int d1; int d2;
     while (i <= n - 1)
     {
         k = 0;
@@ -278,11 +284,25 @@ void boyer_matcher_imp(char *text, int n, char *pattern, int m)
         // i = i - k;
         if(k == m)
         {
-            // printf("%d ", i-m+1);
+            printf("%d ", i-m+1);
             found = 1;
+            i++;
+            continue;
         }
 
-        i = i + badsym[text[i]];    // using horspools logic for now
+        // i = i + badsym[text[i]];    // using horspools logic for now
+
+        // shift for mismatching character
+        d1 = badsym[text[i-k]] - k;
+        if(d1 <= 0)
+            d1 = 1;
+        
+        d2 = goodsuff[m-k];
+
+        if(k != 0)
+            i = i + (d1 > d2 ? d1 : d2);
+        else
+            i = i + d1;
     }
 
     free(badsym);
@@ -292,7 +312,7 @@ void boyer_matcher_imp(char *text, int n, char *pattern, int m)
         printf("-1\n");
         return;
     }
-    printf("1\n");
+    printf("\n");
     
     
 }
@@ -318,8 +338,8 @@ int main(int argc, char const *argv[])
 
         plen = strlen(pattern);
 
-        boyer_matcher(text, tlen, pattern, plen);
-        // boyer_matcher_imp(text, tlen, pattern, plen);
+        // boyer_matcher(text, tlen, pattern, plen);
+        boyer_matcher_imp(text, tlen, pattern, plen);
     }
 
     free(pattern);

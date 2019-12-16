@@ -141,8 +141,8 @@ int main(int argc, char const *argv[])
 
         plen = strlen(pattern);
 
-        // naive_matcher_imp(text, tlen, pattern, plen);
-        naive_matcher(text, tlen, pattern, plen);
+        naive_matcher_imp(text, tlen, pattern, plen);
+        // naive_matcher(text, tlen, pattern, plen);
     }
 
     free(pattern);

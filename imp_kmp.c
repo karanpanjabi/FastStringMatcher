@@ -22,7 +22,7 @@ int *compute_prefix_function(char *pattern, int patlen)
 
     pi[0] = 0;
     int k = 0;
-    for (int q = 2; q <= m; q++)
+    for (int q = 1; q <= m-1; q++)
     {
         while (k > 0 && pattern[k + 1] != pattern[q])
         {
@@ -36,5 +36,19 @@ int *compute_prefix_function(char *pattern, int patlen)
     }
 
     return pi;
+}
+
+int main(int argc, char const *argv[])
+{
+    char *pat = "ababaca";
+    int l = strlen(pat);
+    int *pref = compute_prefix_function(pat, l);
+
+    for (int i = 0; i < l; i++)
+    {
+        printf("%c %d\n", pat[i], pref[i]);
+    }
+    
+    return 0;
 }
 
