@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <string.h>
 #include <inttypes.h>
 
 // __BYTE_ORDER__
@@ -16,31 +16,31 @@ typedef int32_t ws;
 
 
 // finds the number of chars that have matched from right
-// int getmatchedpos(int32 num)
-// {
-//     //works with little endian num ?
-//     static int32 low_3 = 1;
-//     static int32 high_3 = 255;
+int getmatchedpos32(int32_t num)
+{
+    //works with little endian num ?
+    static int32_t low_3 = 1;
+    static int32_t high_3 = 255;
 
-//     static int32 low_2 = 1 << 8;
-//     static int32 high_2 = (1 << 16) - 1;
+    static int32_t low_2 = 1 << 8;
+    static int32_t high_2 = (1 << 16) - 1;
     
-//     static int32 low_1 = 1 << 16;
-//     static int32 high_1 = (1 << 24) - 1;
+    static int32_t low_1 = 1 << 16;
+    static int32_t high_1 = (1 << 24) - 1;
 
-//     if(num == 0)
-//         return 4;
-//     else if(num >= low_3 && num <= high_3)
-//         return 3;
-//     else if(num >= low_2 && num <= high_2)
-//         return 2;
-//     else if(num >= low_1 && num <= high_1)
-//         return 1;  
-//     else
-//         return 0;
-// }
+    if(num == 0)
+        return 4;
+    else if(num >= low_3 && num <= high_3)
+        return 3;
+    else if(num >= low_2 && num <= high_2)
+        return 2;
+    else if(num >= low_1 && num <= high_1)
+        return 1;  
+    else
+        return 0;
+}
 
-int getmatchedpos(ws num)
+int getmatchedamt_right(ws num)
 {
     static ws low_7 = WS(1);
     static ws high_7 = (WS(1) << 8) - 1;
@@ -84,23 +84,62 @@ int getmatchedpos(ws num)
         return 0;
 }
 
+int getmatchedamt_left(ws num)
+{
+    static int wsbytes = sizeof(ws);
+    if(num == 0)
+        return wsbytes;
+    
+    for (int i = wsbytes-1; i >= 1; i--)
+    {
+        if(num % (WS(1) << (i*8)) == 0)
+            return i;
+    }
+    return 0;
+}
+
 
 int main()
 {
     // char *A = "ABCD";
     // char *B = "CCCD";
 
-    // int32 ai = *(int32 *) A;
-    // int32 bi = *(int32 *) B;
+    // int32_t ai = *(int32_t *) A;
+    // int32_t bi = *(int32_t *) B;
 
-    // int32 x = ai^bi;
+    // int32_t x = ai^bi;
 
-    // printf("%d\n", sizeof(int32));
+    // printf("%d\n", sizeof(int32_t));
     // printf("%u %u\n", ai, bi);
-    // printf("%u %d\n", x, getmatchedpos(x));
+    // printf("%u %d\n", x, getmatchedpos32(x));
+
+
+    // char *A = "ABCDEFGH";
+    // char *B = "KKKDKKGH";
+
+    // ws ai = *(ws *) A;
+    // ws bi = *(ws *) B;
+
+    // ws x = ai^bi;
+
+    // printf("%ld\n", sizeof(ws));
+    // printf("%lu %lu\n", ai, bi);
+    // printf("%lu %d\n", x, getmatchedamt_right(x));
+    
+
+    // ws p = 0;
+
+    // char *pat = "ABCDEF";
+
+    // memcpy(((char *) &p) + (8 - 6), pat, 6);
+
+    // printf("%lu\n", p);
+
+    // 00000000 01000111 01000110 01000101 01000100 01000011 01000010 01000001
+
 
     char *A = "ABCDEFGH";
-    char *B = "KKKDKKGH";
+    char *B = "AKKKKKKK";
 
     ws ai = *(ws *) A;
     ws bi = *(ws *) B;
@@ -109,6 +148,5 @@ int main()
 
     printf("%ld\n", sizeof(ws));
     printf("%lu %lu\n", ai, bi);
-    printf("%lu %d\n", x, getmatchedpos(x));
-    
+    printf("%lu %d\n", x, getmatchedamt_left(x));
 }

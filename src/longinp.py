@@ -1,10 +1,10 @@
 st = ""
 
-for i in range(int(1e4)):
+for i in range(int(1e6)):
     st += "a"
 
 print(st)
 
 print(1)
 
-print(st[:1000])
+print(st[:100])

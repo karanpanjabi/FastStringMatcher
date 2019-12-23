@@ -290,7 +290,6 @@ void boyer_matcher_imp(char *text, int n, char *pattern, int m)
             continue;
         }
 
-        // i = i + badsym[text[i]];    // using horspools logic for now
 
         // shift for mismatching character
         d1 = badsym[text[i-k]] - k;
@@ -303,9 +302,12 @@ void boyer_matcher_imp(char *text, int n, char *pattern, int m)
             i = i + (d1 > d2 ? d1 : d2);
         else
             i = i + d1;
+            
+        // i = i + badsym[text[i]];    // using horspools logic for now
     }
 
     free(badsym);
+    free(goodsuff);
 
     if(found == -1)
     {

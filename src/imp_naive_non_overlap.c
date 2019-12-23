@@ -16,7 +16,8 @@ typedef int32_t ws;
 void naive_matcher(char *text, int tlen, char *pattern, int plen)
 {
     int found = -1;
-    for (int s = 0; s <= tlen - plen; s++)
+    int s = 0;
+    while(s <= (tlen - plen))
     {
         int j = 0;
         while(j<plen && pattern[j] == text[s+j])
@@ -27,8 +28,14 @@ void naive_matcher(char *text, int tlen, char *pattern, int plen)
         if(j == plen)
         {
             found = 1;
-            // printf("%d ", s);
+            printf("%d ", s);
+            s += plen;
         }
+        else
+        {
+            s++;
+        }
+        
     }
 
     if(found == -1)
@@ -36,14 +43,15 @@ void naive_matcher(char *text, int tlen, char *pattern, int plen)
         printf("-1\n");
         return;
     }
-    printf("1\n");
+    printf("\n");
     
 }
 
 void naive_matcher_imp(char *text, int tlen, char *pattern, int plen)
 {
     int found = -1;
-    for (int s = 0; s <= tlen - plen; s++)
+    int s = 0;
+    while(s <= (tlen - plen))
     {
         // if(s == 1) raise(SIGINT);
         int j = 0;
@@ -108,8 +116,14 @@ void naive_matcher_imp(char *text, int tlen, char *pattern, int plen)
         if(j == plen)
         {
             found = 1;
-            // printf("%d ", s);
+            printf("%d ", s);
+            s += plen;
         }
+        else
+        {
+            s++;
+        }
+        
     }
 
     if(found == -1)
@@ -117,7 +131,7 @@ void naive_matcher_imp(char *text, int tlen, char *pattern, int plen)
         printf("-1\n");
         return;
     }
-    printf("1\n");
+    printf("\n");
 }
 
 int main(int argc, char const *argv[])
@@ -141,8 +155,8 @@ int main(int argc, char const *argv[])
 
         plen = strlen(pattern);
 
-        naive_matcher_imp(text, tlen, pattern, plen);
-        // naive_matcher(text, tlen, pattern, plen);
+        // naive_matcher_imp(text, tlen, pattern, plen);
+        naive_matcher(text, tlen, pattern, plen);
     }
 
     free(pattern);
